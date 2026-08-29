@@ -1,0 +1,49 @@
+{
+  "run_id": "qwen27b_v1_indblocks",
+  "_comment": "Identical to run_qwen_k8s.json (same model, sampling, prompts, personas, seed) except battery_mode = independent_blocks: the treatment part of each session is answered exactly as in the sequential run, then each of the 13 outcome blocks (one survey page each) is asked in its own call that sees the treatment transcript but none of the other blocks' answers -- the anchoring/coupling mitigation piloted in src/testbed (RESULTS.md 2026-08-24). Cost: 13 battery calls instead of 1 per session (~270k calls for 1,000 x 17), with a shared persona+treatment prefix that vLLM's prefix cache reuses across a session's calls. Same seed -> same stimuli, filler and block orders per agent x condition as the sequential run, so the two runs differ only in the battery design. Concurrency: workers 16 x independent_concurrency 2 = 32 requests in flight. Measured 2026-08-27 on the sequential run: 32 in flight = 17.4 pairs/min, 64 in flight = 16.4-16.9 pairs/min with KV cache at 96-99% and hundreds of preemptions -> the pod is compute-bound at ~32 concurrent requests; more in flight only thrashes. independent_concurrency 2 halves a session's wall clock without raising total load.",
+  "model": {
+    "provider": "openai",
+    "model": "Qwen/Qwen3.8-27B-FP8",
+    "base_url_env": "QWEN_BASE_URL",
+    "api_key_env": "QWEN_API_KEY",
+    "temperature": 0.7,
+    "max_tokens": 5000,
+    "timeout": 900,
+    "max_retries": 10,
+    "backoff_base": 2.0,
+    "request_overrides": {
+      "top_p": 0.8,
+      "chat_template_kwargs": {
+        "enable_thinking": false
+      }
+    }
+  },
+  "cleanup_model": {
+    "provider": "openai",
+    "model": "Qwen/Qwen3.8-27B-FP8",
+    "base_url_env": "QWEN_BASE_URL",
+    "api_key_env": "QWEN_API_KEY",
+    "temperature": 0.0,
+    "max_tokens": 4096,
+    "timeout": 600,
+    "request_overrides": {
+      "chat_template_kwargs": {
+        "enable_thinking": false
+      }
+    }
+  },
+  "options": {
+    "conditions": null,
+    "battery_steps": 1,
+    "battery_mode": "independent_blocks",
+    "pretreatment": true,
+    "include_demographics": true,
+    "explanation_style": "brief",
+    "max_attempts": 3,
+    "seed": 20260818,
+    "workers": 16,
+    "store_prompts": "full",
+    "log_every": 50,
+    "independent_concurrency": 2
+  }
+}
