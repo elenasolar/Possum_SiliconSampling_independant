@@ -160,7 +160,7 @@ sections (B) once per model. See the call's *Disclosure policy* for escrow rules
   https://github.com/elenasolar/Possum_SiliconSampling_independant 
 
 - **K.2 Raw output logs †** — complete unprocessed model responses archived, hashed, time-stamped (required for Tiers 1–2, public or escrowed; Tier 3 where intermediate generations exist; oversized logs may be a separate linked Zenodo upload):
-  Complete, unprocessed raw model call logs (`calls.jsonl`: full prompt, full response, tokens, timing, per call) are included in this deposit, hashed and time-stamped. Published in full as the underlying Reddit-derived text embedded in prompts/explanations is already public information.
+  Complete model full prompt, full raw response, tokens, timing exceed GitHub's 2GB per-file limit (5.8GB) and are deposited separately on Zenodo: 10.5281/zenodo.22178747
 
 - **K.3 Computational resources** — API-call counts, total tokens, cost, compute time:
   Independant Block approach: 229,010 API calls
